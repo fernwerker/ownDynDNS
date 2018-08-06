@@ -2,8 +2,8 @@
 Self-hosted dynamic DNS php script for FRITZ!Box and netcup DNS API
 
 ## Authors
-* @fernwerker
-* @philipptempel
+* Felix Kretschmer [@fernwerker](https://github.com/fernwerker)
+* Philipp Tempel [@philipptempel](https://github.com/philipptempel)
 
 ## Usage
 ### Installation
