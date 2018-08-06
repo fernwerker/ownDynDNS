@@ -29,7 +29,7 @@ Self-hosted dynamic DNS php script for FRITZ!Box and netcup DNS API
 
 ## References
 * DNS API Documentation: https://ccp.netcup.net/run/webservice/servers/endpoint.php
-* dnsapi.php is provided by netcup
+* Source of dnsapi.php: https://ccp.netcup.net/run/webservice/servers/endpoint.php?PHPSOAPCLIENT
 
 ## License
 Published under GNU General Public License v3.0  
