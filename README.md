@@ -1,9 +1,9 @@
-# owndyndns
+# ownDynDNS
 Self-hosted dynamic DNS php script for FRITZ!Box and netcup DNS API
 
 ## Authors
-* Felix Kretschmer
-* Philipp Tempel
+* @fernwerker
+* @philipptempel
 
 ## Usage
 ### Installation
@@ -20,12 +20,12 @@ Self-hosted dynamic DNS php script for FRITZ!Box and netcup DNS API
 ### FRITZ!Box Settings
 * Go to "Internet" -> "DynDNS"
 * Choose "custom"
-* Update-URL: https://<url of your webspace>/update.php?user=<username>&password=<pass>&ipv4=<ipaddr>&ipv6=<ip6addr>&domain=<domain>
+* Update-URL: `https://<url of your webspace>/update.php?user=<username>&password=<pass>&ipv4=<ipaddr>&ipv6=<ip6addr>&domain=<domain>`
   * only the url needs to be adjusted, the rest is automatically filled by the FRITZ!Box
   * http or https is possible if valid SSL certificate (e.g. Let's Encrypt)
-* Domainname: <host record that is supposed to be updated>
-* Username: <username as defined in update.php>
-* Password: <password as definied in update.php>
+* Domainname: `<host record that is supposed to be updated>`
+* Username: `<username as defined in update.php>`
+* Password: `<password as definied in update.php>`
 
 ## References
 * DNS API Documentation: https://ccp.netcup.net/run/webservice/servers/endpoint.php
