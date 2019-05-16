@@ -75,6 +75,12 @@ final class Handler
         if (!$this->config->isLog()) {
             return;
         }
+        
+        if (!file_exists($this->config->getLogFile())) {
+			if (!touch($this->config->getLogFile())) {
+				printf('[ERROR] unable to create %s %s', $this->config->getLogFile(), PHP_EOL);
+			}
+        }
 
         // save only the newest 100 log entries for each domain
         $this->log[$this->payload->getDomain()] = array_reverse(array_slice(array_reverse($this->log[$this->payload->getDomain()]), 0, 100));
