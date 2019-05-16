@@ -1,5 +1,10 @@
 <?php
 
+namespace netcup\DNS\API\Soap;
+
+use Exception;
+use SoapClient;
+use SoapFault;
 
 /**
  * Example client to access the domain reselling API. 
