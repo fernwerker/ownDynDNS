@@ -31,6 +31,11 @@ final class Config
     private $customerId;
 
     /**
+     * @var bool
+     */
+    private $log = true;
+
+    /**
      * @var string
      */
     private $logFile;
@@ -104,6 +109,14 @@ final class Config
         return $this->customerId;
     }
 
+    /**
+     * @return bool
+     */
+    public function isLog()
+    {
+        return $this->log;
+    }
+    
     /**
      * @return string
      */

@@ -72,6 +72,10 @@ final class Handler
 
     private function doExit()
     {
+        if (!$this->config->isLog()) {
+            return;
+        }
+
         // save only the newest 100 log entries for each domain
         $this->log[$this->payload->getDomain()] = array_reverse(array_slice(array_reverse($this->log[$this->payload->getDomain()]), 0, 100));
 
