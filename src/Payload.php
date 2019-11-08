@@ -22,6 +22,11 @@ final class Payload
     /**
      * @var string
      */
+    private $mode;
+
+    /**
+     * @var string
+     */
     private $ipv4;
 
     /**
@@ -85,6 +90,23 @@ final class Payload
     public function getDomain()
     {
         return $this->domain;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMatcher()
+    {
+        switch ($this->mode) {
+            case 'both':
+                return ['@', '*'];
+
+            case '*':
+                return ['*'];
+
+            default:
+                return ['@'];
+        }
     }
 
     /**
