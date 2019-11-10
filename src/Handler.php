@@ -75,11 +75,11 @@ final class Handler
         if (!$this->config->isLog()) {
             return;
         }
-        
+
         if (!file_exists($this->config->getLogFile())) {
-			if (!touch($this->config->getLogFile())) {
-				printf('[ERROR] unable to create %s %s', $this->config->getLogFile(), PHP_EOL);
-			}
+            if (!touch($this->config->getLogFile())) {
+                printf('[ERROR] unable to create %s %s', $this->config->getLogFile(), PHP_EOL);
+            }
         }
 
         // save only the newest 100 log entries for each domain
@@ -125,7 +125,7 @@ final class Handler
         $changes = false;
 
         foreach ($infoHandle->responsedata->dnsrecords as $key => $record) {
-            $recordHostnameReal = ($record->hostname !== '@') ? $record->hostname . '.' . $this->payload->getHostname() : $this->payload->getHostname();
+            $recordHostnameReal = (!in_array($record->hostname, $this->payload->getMatcher())) ? $record->hostname . '.' . $this->payload->getHostname() : $this->payload->getHostname();
 
             if ($recordHostnameReal === $this->payload->getDomain()) {
 
@@ -137,7 +137,7 @@ final class Handler
                     )
                 ) {
                     $record->destination = $this->payload->getIpv4();
-                    $this->doLog(sprintf('IPv4 for %s set to %s', $recordHostnameReal, $this->payload->getIpv4()));
+                    $this->doLog(sprintf('IPv4 for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getIpv4()));
                     $changes = true;
                 }
 
@@ -149,7 +149,7 @@ final class Handler
                     )
                 ) {
                     $record->destination = $this->payload->getIpv6();
-                    $this->doLog(sprintf('IPv6 for %s set to %s', $recordHostnameReal, $this->payload->getIpv6()));
+                    $this->doLog(sprintf('IPv6 for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getIpv6()));
                     $changes = true;
                 }
             }
