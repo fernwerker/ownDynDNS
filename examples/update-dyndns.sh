@@ -10,8 +10,8 @@ SCRIPT="https://<url of your webspace>/update.php"
 FORCE=0
 MODE="both" # can be undefined, "@", "*" or "both"
 
-IPV4=$(curl -4 -q ident.me)
-IPV6=$(curl -6 -q ident.me)
+IPV4=$(curl -4 -q v4.ident.me)
+IPV6=$(curl -6 -q v6.ident.me)
 
 echo ${IPV4}
 echo ${IPV6}
