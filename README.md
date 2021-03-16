@@ -38,4 +38,4 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
 
 ## License
 Published under GNU General Public License v3.0  
-&copy; Felix Kretschmer, 2019
+&copy; Felix Kretschmer, 2021
