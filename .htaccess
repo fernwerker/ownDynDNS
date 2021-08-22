@@ -1,4 +1,4 @@
-<Files .env>
-    Order allow,deny
-    Deny from all
-</Files>
+<FilesMatch "\.(env|json)$">
+	Order allow,deny
+	Deny from all
+</FilesMatch>
