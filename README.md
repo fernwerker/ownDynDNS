@@ -17,7 +17,7 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
   * `customerId` -> your netcup Customer ID
   * `debug` -> true|false enables debug mode and generates output of update.php (normal operation has no output)
   
-* Create each host record in your netcup CCP before using the script. The script does not create any missing records.
+* Create each host record in your netcup CCP (DNS settings) before using the script. The script does not create any missing records.
 
 ### AVM FRITZ!Box Settings
 * Go to "Internet" -> "Freigaben" -> "DynDNS"
