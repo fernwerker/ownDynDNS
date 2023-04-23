@@ -17,4 +17,17 @@ if (!file_exists('.env')) {
 
 $config = parse_ini_file('.env', false, INI_SCANNER_TYPED);
 
-(new netcup\DNS\API\Handler($config, $_REQUEST))->doRun();
+// Get the domains from the URL parameter
+$domains = explode(',', $_REQUEST['domain']);
+
+// Loop through each domain and call the Handler
+foreach ($domains as $domain) {
+    // Create a new request object with the current domain
+    $request = $_REQUEST;
+    $request['domain'] = trim($domain);
+    // echo "Processing domain: {$domain}\n";
+
+
+    // Call the Handler with the current domain
+    (new netcup\DNS\API\Handler($config, $request))->doRun();
+}
