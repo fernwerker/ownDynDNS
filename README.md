@@ -32,6 +32,31 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
 * Username: `<username as defined in .env file>`
 * Password: `<password as definied in .env file>`
 
+### Synology DSM Settings
+* Go to "Control Panel" -> "External Access" -> "DDNS"
+* Click on "Customize Provider" to create a profile for your own DDNS server
+* Service Provider: This is the display name of your custom provider
+* Update-URL: `https://<url of your webspace>/update.php?user=__USERNAME__&password=__PASSWORD__&ipv4=__MYIP__&domain=__HOSTNAME__`
+  * Attention: The variables are delimited by two underscores
+  * Currently Synology custom DDNS does not support IPv6, for whatever reason.
+* Save your custom provider
+* Click on "Add" to create a DDNS job
+* Select your custom provider. Notice that an asterisk [*] has appeared in front of the name to signify that this is a custom provider.
+* Hostname: `<host record that is supposed to be updated>`
+* Username/Email: `<username as defined in .env file>`
+* Password/Key: `<password as defined in .env file>`
+* External Address (IPv4): probably "Auto", uses Synology service to find own external IP
+* External Address (IPv6): doesn't matter, currently not supported by Synology
+
+### pfSense Settings
+* Go to "Services" -> "Dynamic DNS"
+* Click on "Add" to create a DDNS profile
+* Service Type: "Custom"
+* Interface to monitor: `<select you WAN interface>`
+* Interface to send update from: `<select your WAN interface>`
+* Update URL: `https://<url of your webspace>/update.php?user=<user from .env>&password=<password from .env>&ipv4=%IP%&domain=<host record to update>`
+* Leave all other fields empty / default
+
 # run as cronjob on a **nix based device
 * see [examples](./examples)
 
