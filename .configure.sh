@@ -1,8 +1,11 @@
-#!/bin/bash
+!/bin/bash
 echo "### ownDynDNS configuration script"
 
 # set variables
-scriptversion="1.0"
+scriptversion="1.2"
+
+wwwuserd="www-data"
+wwwgroupd="www-data"
 
 defaultenvfile=".env.dist"
 
@@ -65,8 +68,7 @@ else
   log="false"
 fi
 
-echo "the logfile is created in this directory by default."
-echo "your ip history is thereby publically available."
+echo "the logfile is created in this directory by default. your ip history is thereby publically available."
 echo "select where the logfile should be created if enabled:"
 echo "[1] default: ${log1}"
 echo "[2] private: ${log2}"
@@ -86,8 +88,51 @@ case $choice in
     ;;
 esac
 
+echo "the logfile needs to be writable by the webserver if logging is enabled."
+read -p "which user does the webserver run as? [${wwwuserd}]: " wwwuser
+wwwuser=${wwwuser:-$wwwuserd}
+
+read -p "which group does the webserver run as? [${wwwgroupd}]: " wwwgroup
+wwwgroup=${wwwgroup:-$wwwgroupd}
+
 mkdir -p $(dirname $logfile) && touch $logfile || echo "### could not create logfile!"
+chown $wwwuser:$wwwgroup $logfile
+chmod 0640 $logfile
 #echo "logfile will be created at: ${logfile}"
+
+
+
+### Apache htaccess file config
+echo "if you are using apache it is recommended to enable the .htaccess file to prevent unauthorized access to the .env file and any logfile."
+echo "select if you want to enable the .htaccess file:"
+echo "[1] no .htaccess file. (e.g. using nginx)"
+echo "[2] block access to .env file only (default log location accessible)"
+echo "[3] block access to .env file and log file"
+
+read -p "select from the choices above [1]: " choice
+case $choice in
+  2)
+    cat > $htaccess << EOM
+<FilesMatch "\.env$">
+        Order allow,deny
+        Deny from all
+</FilesMatch>
+EOM
+    rm .htaccess.example
+    ;;
+  3)
+    mv .htaccess{.example,}
+    ;;
+  *)
+    rm .htaccess.example
+    ;;
+esac
+
+### nginx htaccess equivalent message
+echo "if you are using nginx please read the docs about how to disable access to certain files and folders.\nyou might add a location block to the beginning of your site config as follows:"
+echo -e "  location ~* (env|log|json) {\n    deny all;\n    return 404;\n  }"
+
+
 
 ### create the .env file
 if [ -f $envfile ]
