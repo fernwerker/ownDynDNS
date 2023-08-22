@@ -26,20 +26,32 @@ final class Handler
         $this->config = new Config($config);
 
         if (!$this->config->isValid()) {
-            throw new RuntimeException('configuration invalid');
+            if ($this->config->isDebug()) {
+                throw new RuntimeException('configuration invalid');
+            } else {
+                exit("configuration invalid\n");
+            }
         }
 
         $this->payload = new Payload($payload);
 
         if (!$this->payload->isValid()) {
-            throw new RuntimeException('payload invalid');
+            if ($this->config->isDebug()) {
+                throw new RuntimeException('payload invalid');
+            } else {
+                exit("payload invalid\n");
+            }
         }
 
         if (
             $this->config->getUsername() !== $this->payload->getUser() ||
             $this->config->getPassword() !== $this->payload->getPassword()
         ) {
-            throw new RuntimeException('credentials wrong');
+            if ($this->config->isDebug()) {
+                throw new RuntimeException('credentials invalid');
+            } else {
+                exit("credentials invalid\n");
+            }
         }
 
         if (is_readable($this->config->getLogFile())) {
@@ -152,8 +164,8 @@ final class Handler
                     $this->doLog(sprintf('IPv6 for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getIpv6()));
                     $changes = true;
                 }
-                
-                // update TXT Record if exists and content has changed
+
+                // update TXT Record if exists and IP has changed
                 if ('TXT' === $record->type && $this->payload->getTxt() &&
                     (
                         $this->payload->isForce()
