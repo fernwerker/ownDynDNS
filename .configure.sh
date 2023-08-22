@@ -2,7 +2,7 @@
 echo "### ownDynDNS configuration script"
 
 # set variables
-scriptversion="1.3"
+scriptversion="1.3.1"
 
 wwwuserd="www-data"
 wwwgroupd="www-data"
@@ -157,6 +157,6 @@ echo "apiPassword=\"${apipass}\"" >> $envfile
 echo "customerId=\"${custid}\"" >> $envfile
 echo "debug=${debug}" >> $envfile
 echo "log=${log}" >> $envfile
-echo "logfile=${logfile}" >> $envfile
+echo "logFile=${logfile}" >> $envfile
 
 echo "created .env file at: ${envfile}"
