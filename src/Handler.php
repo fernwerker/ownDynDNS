@@ -152,6 +152,18 @@ final class Handler
                     $this->doLog(sprintf('IPv6 for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getIpv6()));
                     $changes = true;
                 }
+                
+                // update TXT Record if exists and content has changed
+                if ('TXT' === $record->type && $this->payload->getTxt() &&
+                    (
+                        $this->payload->isForce()
+                        || $record->destination !== $this->payload->getTxt()
+                    )
+                ) {
+                    $record->destination = $this->payload->getTxt();
+                    $this->doLog(sprintf('TXT for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getTxt()));
+                    $changes = true;
+                }
             }
         }
 
