@@ -2,7 +2,7 @@
 echo "### ownDynDNS configuration script"
 
 # set variables
-scriptversion="1.3.1"
+scriptversion="1.4"
 
 wwwuserd="www-data"
 wwwgroupd="www-data"
@@ -132,6 +132,15 @@ esac
 echo "if you are using nginx please read the docs about how to disable access to certain files and folders.\nyou might add a location block to the beginning of your site config as follows:"
 echo -e "  location ~* (env|log|json) {\n    deny all;\n    return 404;\n  }"
 
+read -p "do you wish to enable result return? [y/N]: " returnip
+if [[ ${returnip,,::1} == "y" ]]
+then
+  #echo "enabling return ip"
+  returnip="true"
+else
+  #echo "disabling return ip"
+  returnip="false"
+fi
 
 
 ### create the .env file
@@ -158,5 +167,6 @@ echo "customerId=\"${custid}\"" >> $envfile
 echo "debug=${debug}" >> $envfile
 echo "log=${log}" >> $envfile
 echo "logFile=${logfile}" >> $envfile
+echo "returnIp=${returnip}" >> $envfile
 
 echo "created .env file at: ${envfile}"
