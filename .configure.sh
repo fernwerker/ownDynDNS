@@ -2,7 +2,7 @@
 echo "### ownDynDNS configuration script"
 
 # set variables
-scriptversion="1.2"
+scriptversion="1.3"
 
 wwwuserd="www-data"
 wwwgroupd="www-data"
@@ -81,7 +81,7 @@ case $choice in
     ;;
   3)
     read -p "enter logfile location: " logfile
-    logfile={logfile:-$log1}
+    logfile=${logfile:-$log1}
     ;;
   *)
     logfile=${log1}
@@ -155,8 +155,8 @@ echo "password=\"${pass}\"" >> $envfile
 echo "apiKey=\"${apikey}\"" >> $envfile
 echo "apiPassword=\"${apipass}\"" >> $envfile
 echo "customerId=\"${custid}\"" >> $envfile
-echo "debug=\"${debug}\"" >> $envfile
-echo "log=\"${log}\"" >> $envfile
-echo "logfile=\"${logfile}\"" >> $envfile
+echo "debug=${debug}" >> $envfile
+echo "log=${log}" >> $envfile
+echo "logfile=${logfile}" >> $envfile
 
 echo "created .env file at: ${envfile}"
