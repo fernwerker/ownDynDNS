@@ -35,6 +35,11 @@ final class Payload
     private $ipv6;
 
     /**
+     * @var string
+     */
+    private $txt;
+
+    /**
      * @var bool
      */
     private $force = false;
@@ -65,6 +70,8 @@ final class Payload
                 (
                     !empty($this->ipv6) && $this->isValidIpv6()
                 )
+                ||
+                !empty($this->txt)
             );
     }
 
@@ -168,6 +175,14 @@ final class Payload
         return (bool)filter_var($this->ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
     }
 
+    /**
+     * @return string
+     */
+    public function getTxt()
+    {
+        return $this->txt;
+    }
+    
     /**
      * @return bool
      */
