@@ -36,7 +36,7 @@ final class Payload
 
     /**
      * @var string
-     */
+    */
     private $txt;
 
     /**
@@ -127,7 +127,9 @@ final class Payload
      * works: nas.tld.de
      * works: tld.com
      * failed: nas.tld.co.uk
-     * failed: nas.home.tld.de
+     * failed: nas.home.tld.de  ** see new below
+     * 
+     *  new: for explicit host / domain separation use "&host=nas.home&domain=tld.de" for the last example
      *
      * @return string
      */

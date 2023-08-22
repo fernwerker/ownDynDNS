@@ -185,7 +185,7 @@ final class Handler
             }
         }
 
-        if ($changes) {
+        if (true === $changes) {
             $recordSet = new Soap\Dnsrecordset();
             $recordSet->dnsrecords = $infoHandle->responsedata->dnsrecords;
 

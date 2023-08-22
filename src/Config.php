@@ -43,7 +43,7 @@ final class Config
     /**
      * @var bool
      */
-    private $debug;
+    private $debug = false;
 
     /**
      * @var bool
@@ -137,6 +137,7 @@ final class Config
     {
         return $this->debug;
     }
+
 
     /**
      * @return bool
