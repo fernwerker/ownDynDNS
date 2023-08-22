@@ -182,7 +182,7 @@ final class Payload
     {
         return $this->txt;
     }
-    
+
     /**
      * @return bool
      */

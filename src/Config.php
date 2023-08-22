@@ -45,6 +45,12 @@ final class Config
      */
     private $debug;
 
+    /**
+     * @var bool
+     */
+    private $returnIp = true;
+
+
     public function __construct(array $config)
     {
         foreach (get_object_vars($this) as $key => $val) {
@@ -66,7 +72,6 @@ final class Config
             !empty($this->apiPassword) &&
             !empty($this->customerId) &&
             !empty($this->logFile);
-
     }
 
     /**
@@ -116,7 +121,7 @@ final class Config
     {
         return $this->log;
     }
-    
+
     /**
      * @return string
      */
@@ -131,5 +136,13 @@ final class Config
     public function isDebug()
     {
         return $this->debug;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReturnIp()
+    {
+        return $this->returnIp;
     }
 }

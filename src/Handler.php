@@ -135,6 +135,9 @@ final class Handler
 
 
         $changes = false;
+        $ipv4changes = false;
+        $ipv6changes = false;
+        $txtchanges = false;
 
         foreach ($infoHandle->responsedata->dnsrecords as $key => $record) {
             $recordHostnameReal = (!in_array($record->hostname, $this->payload->getMatcher())) ? $record->hostname . '.' . $this->payload->getHostname() : $this->payload->getHostname();
@@ -151,6 +154,7 @@ final class Handler
                     $record->destination = $this->payload->getIpv4();
                     $this->doLog(sprintf('IPv4 for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getIpv4()));
                     $changes = true;
+                    $ipv4changes = true;
                 }
 
                 // update AAAA Record if exists and IP has changed
@@ -163,9 +167,10 @@ final class Handler
                     $record->destination = $this->payload->getIpv6();
                     $this->doLog(sprintf('IPv6 for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getIpv6()));
                     $changes = true;
+                    $ipv6changes = true;
                 }
 
-                // update TXT Record if exists and IP has changed
+                // update TXT Record if exists and content has changed
                 if ('TXT' === $record->type && $this->payload->getTxt() &&
                     (
                         $this->payload->isForce()
@@ -175,11 +180,12 @@ final class Handler
                     $record->destination = $this->payload->getTxt();
                     $this->doLog(sprintf('TXT for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getTxt()));
                     $changes = true;
+                    $txtchanges = true;
                 }
             }
         }
 
-        if (true === $changes) {
+        if ($changes) {
             $recordSet = new Soap\Dnsrecordset();
             $recordSet->dnsrecords = $infoHandle->responsedata->dnsrecords;
 
@@ -210,6 +216,17 @@ final class Handler
             $this->doLog(sprintf('api logout failed, message: %s', $loginHandle->longmessage));
         }
 
+        if ($this->config->isReturnIp()) {
+            if ($ipv4changes) {
+                echo "IPv4 changed: " . $this->payload->getIpv4() . "\n";
+            }
+            if ($ipv6changes) {
+                echo "IPv6 changed: " . $this->payload->getIpv6() . "\n";
+            }
+            if ($txtchanges) {
+                echo "TXT changed: " . $this->payload->getTxt() . "\n";
+            }
+        }
         return $this;
     }
 }
