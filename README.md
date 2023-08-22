@@ -25,6 +25,49 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
 
 * Create each host record in your netcup CCP (DNS settings) before using the script. The script does not create any missing records.
 
+
+## URL possible uses:
+### Required parameters in URL:
+
+<b>user, password and domain</b> are <i> always needed</i>, as well as at least one of the following: <br>
+<b>ipv4, ipv6, txt</b>
+
+
+Parameter | Example | Explanation
+---: | :--- | :---
+user | dnsupdater | username to authenticate against this script as defined in .env file
+password | secretpleasechange |password for that user as defined in .env file
+domain | home.example.com | `case A)` If `host` is not specified: the FQDN for your host
+domain | example.com | `case B)` If you want to update the @ or * record
+domain | example.com | `case C)` If `host`is specified: only the domain part as registered at netcup "nas.home.example.com"
+host | nas.home | `case C)` If your domain contains more than 3 levels "nas.home.example.com"
+ipv4 | 1.2.3.4 | the ipv4 address to update an existing A record
+ipv6 | fe80::12:34:56 | the ipv6 address to update an existing AAAA record
+txt | acme-challenge-text | the content to update an existing TXT record
+force | true | ignore checking if the record needs to be updated, just do it anyways. Default: `false`
+mode | * | `case B)` If domain is your registered domain "example.com". Possible values: `*` or `both`. Default: `@`
+
+
+
+#### Example URL to update A record (IPv4) of home.example.com:
+https://`dyndns.example.com`/update.php?user=`username`&password=`password`&domain=`home.example.com`&ipv4=`IPv4`
+
+#### Example URL to force update AAAA record (IPv6) of example.com:
+https://`dyndns.example.com`/update.php?user=`username`&password=`password`&domain=`example.com`&ipv6=`IPv6`&force=`true`
+
+#### Example URL to update A and AAAA records of home.example.com:
+https://`dyndns.example.com`/update.php?user=`username`&password=`password`&domain=`home.example.com`&ipv4=`IPv4`&ipv6=`IPv6`
+
+#### Example URL to update TXT record _acme-challenge of home.example.com:
+https://`dyndns.example.com`/update.php?user=`username`&password=`password`&domain=`_acme-challenge.example.com`&txt=`textcontent`
+
+#### Example URL to update A record of nas.home.example.com:
+https://`dyndns.example.com`/update.php?user=`username`&password=`password`&domain=`example.com`&host=`nas.home`&ipv4=`IPv4`
+
+#### Example URL to update AAAA wildcard record of example.com:
+https://`dyndns.example.com`/update.php?user=`username`&password=`password`&domain=`example.com`&mode=`*` 
+
+
 ### AVM FRITZ!Box Settings
 * Go to "Internet" -> "Freigaben" -> "DynDNS"
 * Choose "Benutzerdefiniert"
