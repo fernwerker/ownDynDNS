@@ -5,6 +5,7 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
 * Felix Kretschmer [@fernwerker](https://github.com/fernwerker)
 * Philipp Tempel [@philipptempel](https://github.com/philipptempel)
 * Branko Wilhelm [@b2un0](https://github.com/b2un0)
+* Nils Blume [@niiwiicamo](https://github.com/niiwiicamo)
 
 ## Usage
 ### Installation
@@ -15,8 +16,13 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
   * `apiKey` -> API key which is generated in netcup CCP
   * `apiPassword` -> API password which is generated in netcup CCP
   * `customerId` -> your netcup Customer ID
-  * `debug` -> true|false enables debug mode and generates output of update.php (normal operation has no output)
-  
+  * `log` -> true|false enables logging
+  * `logFile` -> configures logfile location if enabled
+  * `debug` -> true|false enables debug mode and generates more output from update.php (normal operation has no output). Needed to receive stack traces from errors.
+  * `returnIp` -> true|false enables return of result if a record was changed
+
+* alternatively you can use .configure.sh to create your .env file for you (if you are on a *NIX system)
+
 * Create each host record in your netcup CCP (DNS settings) before using the script. The script does not create any missing records.
 
 ### AVM FRITZ!Box Settings
