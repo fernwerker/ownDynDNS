@@ -11,20 +11,25 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
 ### Installation
 * Copy all files to your webspace
 * create a copy of `.env.dist` as `.env` and configure:
-  * `username` -> The username for your Router to authenticate (so not everyone can update your DNS)
-  * `password` -> password for your Router
-  * `apiKey` -> API key which is generated in netcup CCP
-  * `apiPassword` -> API password which is generated in netcup CCP
-  * `customerId` -> your netcup Customer ID
-  * `log` -> true|false enables logging
-  * `logFile` -> configures logfile location if enabled
-  * `debug` -> true|false enables debug mode and generates more output from update.php (normal operation has no output). Needed to receive stack traces from errors.
-  * `returnIp` -> true|false enables return of result if a record was changed
-  * `allowCreate` -> true|false allows creation of entries if parameter `create=true` in URL
+
+Parameter | Example | Explanation
+---: | :--- | :---
+`username` | dnsupdater |  The username for your Router to authenticate (so not everyone can update your DNS)
+`password` | secretpleasechange | password for your Router
+`apiKey` | 18neqwd91e21onei1p23841 | API key which is generated in netcup CCP
+`apiPassword` | 82jewqde9m30 | API password which is generated in netcup CCP
+`customerId` | 12345 | your netcup Customer ID
+`log` | `true` / false | enables logging
+`logFile` | log.json | configures logfile location if enabled
+`debug` | true / `false` | enables debug mode and generates more output from update.php (normal operation has no output). Needed to receive stack traces from errors.
+`returnIp` | `true` / false | enables return of result if a record was changed
+`allowCreate` | true/`false` | allows creation of entries if parameter `create=true` in URL
+`restrictDomain` | true / `false` | allows admin to restrict the domain to update to a given value `domain` and/or `host`. See URL parameters for host parameter explanation
 
 * alternatively you can use .configure.sh to create your .env file for you (if you are on a *NIX system)
 
-* Create each host record in your netcup CCP (DNS settings) before using the script. The script does not create any missing records.
+* Create each host record in your netcup CCP (DNS settings) before using the script. <s>The script does not create any missing records.</s><br>
+You can now set `allowCreate=true` in .env and pass `create=true` as URL parameter to create entries on the fly.
 
 
 ## URL possible uses:

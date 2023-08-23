@@ -55,6 +55,21 @@ final class Config
      */
     private $allowCreate = false;
 
+    /**
+     * @var bool
+     */
+    private $restrictDomain = false;
+
+    /**
+     * @var string
+     */
+    private $domain;
+
+    /**
+     * @var string
+     */
+    private $host;
+
 
     public function __construct(array $config)
     {
@@ -157,5 +172,59 @@ final class Config
     public function isAllowCreate()
     {
         return $this->allowCreate;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRestrictDomain()
+    {
+        return $this->restrictDomain;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomain()
+    {
+        if (empty($this->host))
+        {
+            return $this->domain;
+        }
+        else
+        {
+            return $this->host . "." . $this->domain;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        if (!empty($this->host))
+        {
+            return $this->host;
+        }
+        else
+        {
+            $domainParts = explode('.', $this->domain);
+            return $domainParts[0];
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomainName()
+    {
+        // hack if top level domain are used for dynDNS
+        if (1 === substr_count($this->domain, '.')) {
+            return $this->domain;
+        }
+
+        $domainParts = explode('.', $this->domain);
+        array_shift($domainParts); // remove sub domain
+        return implode('.', $domainParts);
     }
 }
