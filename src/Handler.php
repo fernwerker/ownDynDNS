@@ -103,7 +103,6 @@ final class Handler
     }
 
     /**
-     *
      * @return self
      */
     public function doRun()
@@ -133,20 +132,10 @@ final class Handler
             $clientRequestId
         );
 
-        // test: create new entry if it does not exist
-        $createnewentry = true;
         $exists = false;
-        $testing = true;
-
         $ipv4changes = false;
         $ipv6changes = false;
         $txtchanges = false;
-
-
-        // TODO: delete, testing
-        // echo "--- EXISTING ENTRIES BELOW ---", PHP_EOL;
-        // $teststring = print_r($infoHandle->responsedata->dnsrecords, true);
-        // echo $teststring, PHP_EOL;
 
         foreach ($infoHandle->responsedata->dnsrecords as $key => $record) {
             $recordHostnameReal = (!in_array($record->hostname, $this->payload->getMatcher())) ? $record->hostname . '.' . $this->payload->getDomainName() : $this->payload->getDomainName();
@@ -195,10 +184,7 @@ final class Handler
             }
         }
 
-        // echo "--- Exists ---", $exists, PHP_EOL;
-        // echo "--- Createnewentry ---", $createnewentry, PHP_EOL;
-
-        // TODO: if entry does not exist and createnewentry is true:
+        // if entry does not exist and createnewentry is true:
         if ( !$exists && $this->payload->getCreate() && $this->config->isAllowCreate() )
         {
             // init new record set containing empty array
@@ -208,10 +194,6 @@ final class Handler
             foreach ($this->payload->getTypes() as $key => $type)
             {
                 $record = new Soap\Dnsrecord();
-                
-                // echo "getDomain: ", $this->payload->getDomain(), PHP_EOL;
-                // echo "getDomainName: ", $this->payload->getDomainName(), PHP_EOL;
-                // echo "getHost: ", $this->payload->getHost(), PHP_EOL;
 
                 $record->hostname = $this->payload->getHost();
                 $record->type = $type;
@@ -219,7 +201,6 @@ final class Handler
 
                 switch ($type) {
                     case 'A':
-                        // echo "A record set: ", $this->payload->getIpv4(), PHP_EOL;
                         $record->destination = $this->payload->getIpv4();
                         break;
         
@@ -231,17 +212,10 @@ final class Handler
                         $record->destination = $this->payload->getTxt();
                         break;
                 }
-                // echo "destination: ", $record->destination, PHP_EOL;
-                // echo "--- NEW ENTRY BELOW ---", PHP_EOL;
-                // $teststring = print_r($record, true);
-                // echo $teststring, PHP_EOL;
 
                 array_push($newRecordSet->dnsrecords, $record); // push new record into array
             }
             
-            // echo "--- newRecordSet ---", PHP_EOL;
-            // $teststring = print_r($newRecordSet, true);
-            // echo $teststring, PHP_EOL;
 
             $dnsClient->updateDnsRecords(
                 $this->payload->getDomainName(),
