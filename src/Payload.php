@@ -40,6 +40,16 @@ final class Payload
     private $txt;
 
     /**
+     * @var string
+     */
+    private $host;
+
+    /**
+     * @var bool
+     */
+    private $create = false;
+
+    /**
      * @var bool
      */
     private $force = false;
@@ -96,7 +106,30 @@ final class Payload
      */
     public function getDomain()
     {
-        return $this->domain;
+        if (empty($this->host))
+        {
+            return $this->domain;
+        }
+        else
+        {
+            return $this->host . "." . $this->domain;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        if (!empty($this->host))
+        {
+            return $this->host;
+        }
+        else
+        {
+            $domainParts = explode('.', $this->domain);
+            return $domainParts[0];
+        }
     }
 
     /**
@@ -117,6 +150,35 @@ final class Payload
     }
 
     /**
+     * @return bool
+     */
+    public function getCreate()
+    {
+        return $this->create;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTypes()
+    {
+        $types = array();
+        if ($this->getIpv4() && $this->isValidIpv4())
+        {
+            array_push($types, "A");
+        }
+        if ($this->getIpv6() && $this->isValidIpv6())
+        {
+            array_push($types, "AAAA");
+        }
+        if ($this->getTxt())
+        {
+            array_push($types, "TXT");
+        }
+        return $types;
+    }
+
+    /**
      * there is no good way to get the correct "registrable" Domain without external libs!
      *
      * @see https://github.com/jeremykendall/php-domain-parser
@@ -133,7 +195,7 @@ final class Payload
      *
      * @return string
      */
-    public function getHostname()
+    public function getDomainName()
     {
         // hack if top level domain are used for dynDNS
         if (1 === substr_count($this->domain, '.')) {
@@ -191,5 +253,14 @@ final class Payload
     public function isForce()
     {
         return $this->force;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        // TODO:
+        return "A";
     }
 }

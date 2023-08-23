@@ -126,23 +126,36 @@ final class Handler
         }
 
         $infoHandle = $dnsClient->infoDnsRecords(
-            $this->payload->getHostname(),
+            $this->payload->getDomainName(),
             $this->config->getCustomerId(),
             $this->config->getApiKey(),
             $loginHandle->responsedata->apisessionid,
             $clientRequestId
         );
 
+        // test: create new entry if it does not exist
+        $createnewentry = true;
+        $exists = false;
+        $testing = true;
 
-        $changes = false;
         $ipv4changes = false;
         $ipv6changes = false;
         $txtchanges = false;
 
+
+        // TODO: delete, testing
+        // echo "--- EXISTING ENTRIES BELOW ---", PHP_EOL;
+        // $teststring = print_r($infoHandle->responsedata->dnsrecords, true);
+        // echo $teststring, PHP_EOL;
+
         foreach ($infoHandle->responsedata->dnsrecords as $key => $record) {
-            $recordHostnameReal = (!in_array($record->hostname, $this->payload->getMatcher())) ? $record->hostname . '.' . $this->payload->getHostname() : $this->payload->getHostname();
+            $recordHostnameReal = (!in_array($record->hostname, $this->payload->getMatcher())) ? $record->hostname . '.' . $this->payload->getDomainName() : $this->payload->getDomainName();
+
 
             if ($recordHostnameReal === $this->payload->getDomain()) {
+
+                // found matching entry, no need to create one
+                $exists = true;
 
                 // update A Record if exists and IP has changed
                 if ('A' === $record->type && $this->payload->getIpv4() &&
@@ -152,8 +165,7 @@ final class Handler
                     )
                 ) {
                     $record->destination = $this->payload->getIpv4();
-                    $this->doLog(sprintf('IPv4 for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getIpv4()));
-                    $changes = true;
+                    $this->doLog(sprintf('IPv4 for %s set to %s', $record->hostname . '.' . $this->payload->getDomainName(), $this->payload->getIpv4()));
                     $ipv4changes = true;
                 }
 
@@ -165,8 +177,7 @@ final class Handler
                     )
                 ) {
                     $record->destination = $this->payload->getIpv6();
-                    $this->doLog(sprintf('IPv6 for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getIpv6()));
-                    $changes = true;
+                    $this->doLog(sprintf('IPv6 for %s set to %s', $record->hostname . '.' . $this->payload->getDomainName(), $this->payload->getIpv6()));
                     $ipv6changes = true;
                 }
 
@@ -178,19 +189,79 @@ final class Handler
                     )
                 ) {
                     $record->destination = $this->payload->getTxt();
-                    $this->doLog(sprintf('TXT for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getTxt()));
-                    $changes = true;
+                    $this->doLog(sprintf('TXT for %s set to %s', $record->hostname . '.' . $this->payload->getDomainName(), $this->payload->getTxt()));
                     $txtchanges = true;
                 }
             }
         }
 
-        if (true === $changes) {
+        // echo "--- Exists ---", $exists, PHP_EOL;
+        // echo "--- Createnewentry ---", $createnewentry, PHP_EOL;
+
+        // TODO: if entry does not exist and createnewentry is true:
+        if ( !$exists && $this->payload->getCreate() && $this->config->isAllowCreate() )
+        {
+            // init new record set containing empty array
+            $newRecordSet = new Soap\Dnsrecordset();
+            $newRecordSet->dnsrecords = array();
+
+            foreach ($this->payload->getTypes() as $key => $type)
+            {
+                $record = new Soap\Dnsrecord();
+                
+                // echo "getDomain: ", $this->payload->getDomain(), PHP_EOL;
+                // echo "getDomainName: ", $this->payload->getDomainName(), PHP_EOL;
+                // echo "getHost: ", $this->payload->getHost(), PHP_EOL;
+
+                $record->hostname = $this->payload->getHost();
+                $record->type = $type;
+                $record->priority = "0"; // only for MX, can possibly be removed
+
+                switch ($type) {
+                    case 'A':
+                        // echo "A record set: ", $this->payload->getIpv4(), PHP_EOL;
+                        $record->destination = $this->payload->getIpv4();
+                        break;
+        
+                    case 'AAAA':
+                        $record->destination = $this->payload->getIpv6();
+                        break;
+
+                    case 'TXT':
+                        $record->destination = $this->payload->getTxt();
+                        break;
+                }
+                // echo "destination: ", $record->destination, PHP_EOL;
+                // echo "--- NEW ENTRY BELOW ---", PHP_EOL;
+                // $teststring = print_r($record, true);
+                // echo $teststring, PHP_EOL;
+
+                array_push($newRecordSet->dnsrecords, $record); // push new record into array
+            }
+            
+            // echo "--- newRecordSet ---", PHP_EOL;
+            // $teststring = print_r($newRecordSet, true);
+            // echo $teststring, PHP_EOL;
+
+            $dnsClient->updateDnsRecords(
+                $this->payload->getDomainName(),
+                $this->config->getCustomerId(),
+                $this->config->getApiKey(),
+                $loginHandle->responsedata->apisessionid,
+                $clientRequestId,
+                $newRecordSet
+            );
+
+            $this->doLog('dns recordset created');
+        } 
+
+        // if anything was changed, push the update and log
+        if ($ipv4changes or $ipv6changes or $txtchanges) {
             $recordSet = new Soap\Dnsrecordset();
             $recordSet->dnsrecords = $infoHandle->responsedata->dnsrecords;
 
             $dnsClient->updateDnsRecords(
-                $this->payload->getHostname(),
+                $this->payload->getDomainName(),
                 $this->config->getCustomerId(),
                 $this->config->getApiKey(),
                 $loginHandle->responsedata->apisessionid,
@@ -218,13 +289,13 @@ final class Handler
 
         if ($this->config->isReturnIp()) {
             if ($ipv4changes) {
-                echo "IPv4 changed: " . $this->payload->getIpv4() . "\n";
+                echo "IPv4 changed: " . $this->payload->getIpv4(), PHP_EOL;
             }
             if ($ipv6changes) {
-                echo "IPv6 changed: " . $this->payload->getIpv6() . "\n";
+                echo "IPv6 changed: " . $this->payload->getIpv6(), PHP_EOL;
             }
             if ($txtchanges) {
-                echo "TXT changed: " . $this->payload->getTxt() . "\n";
+                echo "TXT changed: " . $this->payload->getTxt(), PHP_EOL;
             }
         }
         return $this;

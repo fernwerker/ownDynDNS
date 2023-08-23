@@ -50,6 +50,11 @@ final class Config
      */
     private $returnIp = true;
 
+    /**
+     * @var bool
+     */
+    private $allowCreate = false;
+
 
     public function __construct(array $config)
     {
@@ -138,12 +143,19 @@ final class Config
         return $this->debug;
     }
 
-
     /**
      * @return bool
      */
     public function isReturnIp()
     {
         return $this->returnIp;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowCreate()
+    {
+        return $this->allowCreate;
     }
 }
