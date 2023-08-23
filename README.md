@@ -20,6 +20,7 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
   * `logFile` -> configures logfile location if enabled
   * `debug` -> true|false enables debug mode and generates more output from update.php (normal operation has no output). Needed to receive stack traces from errors.
   * `returnIp` -> true|false enables return of result if a record was changed
+  * `allowCreate` -> true|false allows creation of entries if parameter `create=true` in URL
 
 * alternatively you can use .configure.sh to create your .env file for you (if you are on a *NIX system)
 
@@ -46,6 +47,7 @@ ipv6 | fe80::12:34:56 | the ipv6 address to update an existing AAAA record
 txt | acme-challenge-text | the content to update an existing TXT record
 force | true | ignore checking if the record needs to be updated, just do it anyways. Default: `false`
 mode | * | `case B)` If domain is your registered domain "example.com". Possible values: `*` or `both`. Default: `@`
+create | true | create all entries if none exist. e.g. will not create A if AAAA exists. Needs `allowCreate=true` in .env
 
 
 
@@ -66,6 +68,9 @@ https://`dyndns.example.com`/update.php?user=`username`&password=`password`&doma
 
 #### Example URL to update AAAA wildcard record of example.com:
 https://`dyndns.example.com`/update.php?user=`username`&password=`password`&domain=`example.com`&mode=`*` 
+
+#### Example URL to create A and TXT records of new.example.com:
+https://`dyndns.example.com`/update.php?user=`username`&password=`password`&domain=`new.example.com`&ipv4=`IPv4`&txt=`textcontent`&create=`true`
 
 
 ### AVM FRITZ!Box Settings
