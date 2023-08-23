@@ -2,7 +2,7 @@
 echo "### ownDynDNS configuration script"
 
 # set variables
-scriptversion="1.4"
+scriptversion="1.5"
 
 wwwuserd="www-data"
 wwwgroupd="www-data"
@@ -142,6 +142,16 @@ else
   returnip="false"
 fi
 
+read -p "do you want to allow creation of new entries on the fly? [y/N]: " allowcreate
+if [[ ${allowcreate,,::1} == "y" ]]
+then
+  #echo "enabling return ip"
+  allowcreate="true"
+else
+  #echo "disabling return ip"
+  allowcreate="false"
+fi
+
 
 ### create the .env file
 if [ -f $envfile ]
@@ -168,5 +178,6 @@ echo "debug=${debug}" >> $envfile
 echo "log=${log}" >> $envfile
 echo "logFile=${logfile}" >> $envfile
 echo "returnIp=${returnip}" >> $envfile
+echo "allowCreate=${allowcreate}" >> $envfile
 
 echo "created .env file at: ${envfile}"
