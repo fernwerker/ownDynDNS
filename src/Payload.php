@@ -255,12 +255,4 @@ final class Payload
         return $this->force;
     }
 
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        // TODO:
-        return "A";
-    }
 }
