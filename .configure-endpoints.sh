@@ -1,6 +1,6 @@
 #!/bin/bash
 
-scriptversion="0.1"
+scriptversion="1.0"
 srcfolder="src"
 updatephp="update.php"
 configuresh=".configure.sh"
