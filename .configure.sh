@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 echo "### ownDynDNS configuration script"
 
 # set variables
