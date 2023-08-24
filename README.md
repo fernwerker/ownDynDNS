@@ -8,7 +8,12 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
 * Nils Blume [@niiwiicamo](https://github.com/niiwiicamo)
 
 ## Usage
-### Installation
+### Install using configure scripts
+* Copy `update.php`, `src/*`, `.env.dist`, `.configure.sh` and `.configure-endpoints.sh` to your webspace
+* If you want multiple endpoints use .configure-endpoints.sh
+* If you want a single endpoint use .configure.sh
+
+### Manual Installation
 * Copy all files to your webspace
 * If you want multiple endpoints that each can only update one domain look at the mydomain folder.<br>
 The update URL would be https://`url`/mydomain/update.php?(...)
