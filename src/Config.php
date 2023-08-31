@@ -63,6 +63,11 @@ final class Config
     /**
      * @var bool
      */
+    private $allowAnonymous = false;
+
+    /**
+     * @var bool
+     */
     private $restrictDomain = false;
 
     /**
@@ -91,8 +96,13 @@ final class Config
     public function isValid()
     {
         return
-            !empty($this->username) &&
-            !empty($this->password) &&
+            (
+                !empty($this->username) &&
+                !empty($this->password)
+            ) ||
+            (
+                $this->isAllowAnonymous()
+            ) &&
             (
                 (
                     !empty($this->apiKey) &&
@@ -200,6 +210,14 @@ final class Config
     public function isAllowNetcupCreds()
     {
         return $this->allowNetcupCreds;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowAnonymous()
+    {
+        return $this->allowAnonymous;
     }
 
     /**

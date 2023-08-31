@@ -33,6 +33,7 @@ Parameter | Example | Explanation
 `allowCreate` | true/`false` | allows creation of entries if parameter `create=true` in URL
 `restrictDomain` | true / `false` | allows admin to restrict the domain to update to a given value `domain` and/or `host`. See URL parameters for host parameter explanation
 `allowNetcupCreds` | true / `false` | allows the user to pass netcup credentials directly via the URL. URL creds will be preferred if any still exist in .env file
+`allowAnonymous` | true / `false` | allows anonymous login, recommended only if you do not store any credentials and disable logging
 
 * alternatively you can use .configure.sh to create your .env file for you (if you are on a *NIX system)
 
@@ -49,7 +50,7 @@ You can now set `allowCreate=true` in .env and pass `create=true` as URL paramet
 
 Parameter | Example | Explanation
 ---: | :--- | :---
-user | dnsupdater | username to authenticate against this script as defined in .env file
+user | dnsupdater | username to authenticate against this script as defined in .env file. If anonymous login is allowed in .env: `anonymous`
 password | secretpleasechange |password for that user as defined in .env file
 domain | home.example.com | `case A)` If `host` is not specified: the FQDN for your host
 domain | example.com | `case B)` If you want to update the @ or * record

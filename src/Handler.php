@@ -58,14 +58,22 @@ final class Handler
             }
         }
 
-        if (
-            $this->config->getUsername() !== $this->payload->getUser() ||
-            $this->config->getPassword() !== $this->payload->getPassword()
-        ) {
-            if ($this->config->isDebug()) {
-                throw new RuntimeException('credentials invalid');
-            } else {
-                exit("credentials invalid\n");
+        if ($this->config->isAllowAnonymous()) {
+            if ($this->payload->getUser() == 'anonymous') {
+                if ($this->config->isDebug()) {
+                    $this->doLog('anonymous login by client');
+                }
+            }
+        } else {
+            if (
+                $this->config->getUsername() !== $this->payload->getUser() ||
+                $this->config->getPassword() !== $this->payload->getPassword()
+            ) {
+                if ($this->config->isDebug()) {
+                    throw new RuntimeException('credentials invalid');
+                } else {
+                    exit("credentials invalid\n");
+                }
             }
         }
 

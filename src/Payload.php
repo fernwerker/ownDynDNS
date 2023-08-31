@@ -85,7 +85,10 @@ final class Payload
     {
         return
             !empty($this->user) &&
-            !empty($this->password) &&
+            (
+                $this->user == 'anonymous' ||
+                !empty($this->password)
+            ) &&
             !empty($this->domain) &&
             (
                 (
