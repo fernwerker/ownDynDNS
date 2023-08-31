@@ -51,7 +51,7 @@ You can now set `allowCreate=true` in .env and pass `create=true` as URL paramet
 Parameter | Example | Explanation
 ---: | :--- | :---
 user | dnsupdater | username to authenticate against this script as defined in .env file. If anonymous login is allowed in .env: `anonymous`
-password | secretpleasechange |password for that user as defined in .env file
+password | secretpleasechange | password for that user as defined in .env file
 domain | home.example.com | `case A)` If `host` is not specified: the FQDN for your host
 domain | example.com | `case B)` If you want to update the @ or * record
 domain | example.com | `case C)` If `host`is specified: only the domain part as registered at netcup "nas.home.example.com"
