@@ -113,7 +113,15 @@ final class Config
                     $this->isAllowNetcupCreds()
                 )
             ) &&
-            !empty($this->logFile);
+            (
+                (
+                    $this->isLog() &&
+                    !empty($this->logFile)
+                ) ||
+                (
+                    $this->isLog() == false
+                )
+            );
     }
 
     /**

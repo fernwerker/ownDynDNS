@@ -92,10 +92,12 @@ final class Handler
             $this->apipassword = $this->config->getApiPassword();
         }
 
-        if (is_readable($this->config->getLogFile())) {
-            $this->log = json_decode(file_get_contents($this->config->getLogFile()), true);
-        } else {
-            $this->log[$this->payload->getDomain()] = [];
+        if ($this->config->isLog()) {
+            if (is_readable($this->config->getLogFile())) {
+                $this->log = json_decode(file_get_contents($this->config->getLogFile()), true);
+            } else {
+                $this->log[$this->payload->getDomain()] = [];
+            }
         }
     }
 
@@ -111,13 +113,15 @@ final class Handler
      */
     private function doLog($msg)
     {
-        $this->log[$this->payload->getDomain()][] = sprintf('[%s] %s', date('c'), $msg);
+        if ($this->config->isLog()) {
+            $this->log[$this->payload->getDomain()][] = sprintf('[%s] %s', date('c'), $msg);
 
-        if ($this->config->isDebug()) {
-            printf('[DEBUG] %s %s', $msg, PHP_EOL);
+            if ($this->config->isDebug()) {
+                printf('[DEBUG] %s %s', $msg, PHP_EOL);
+            }
+
+            return $this;
         }
-
-        return $this;
     }
 
     private function doExit()
