@@ -45,6 +45,21 @@ final class Payload
     private $host;
 
     /**
+     * @var int
+     */
+    private $customerId;
+
+    /**
+     * @var string
+     */
+    private $apiKey;
+
+    /**
+     * @var string
+     */
+    private $apiPassword;
+
+    /**
      * @var bool
      */
     private $create = false;
@@ -83,6 +98,41 @@ final class Payload
                 ||
                 !empty($this->txt)
             );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidNetcupCreds()
+    {
+        return
+            !empty($this->customerId) &&
+            !empty($this->apiKey) &&
+            !empty($this->apiPassword);
+    }
+
+    /**
+     * @return int
+     */
+    public function getCustomerId()
+    {
+        return $this->customerId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getapiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiPassword()
+    {
+        return $this->apiPassword;
     }
 
     /**

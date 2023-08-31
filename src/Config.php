@@ -58,6 +58,11 @@ final class Config
     /**
      * @var bool
      */
+    private $allowNetcupCreds = false;
+
+    /**
+     * @var bool
+     */
     private $restrictDomain = false;
 
     /**
@@ -88,9 +93,16 @@ final class Config
         return
             !empty($this->username) &&
             !empty($this->password) &&
-            !empty($this->apiKey) &&
-            !empty($this->apiPassword) &&
-            !empty($this->customerId) &&
+            (
+                (
+                    !empty($this->apiKey) &&
+                    !empty($this->apiPassword) &&
+                    !empty($this->customerId)
+                ) ||
+                (
+                    $this->isAllowNetcupCreds()
+                )
+            ) &&
             !empty($this->logFile);
     }
 
@@ -180,6 +192,14 @@ final class Config
     public function isRestrictDomain()
     {
         return $this->restrictDomain;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowNetcupCreds()
+    {
+        return $this->allowNetcupCreds;
     }
 
     /**
