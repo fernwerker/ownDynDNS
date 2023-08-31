@@ -21,6 +21,21 @@ final class Handler
      */
     private $payload;
 
+    /**
+     * @var int
+     */
+    private $customerid;
+
+    /**
+     * @var string
+     */
+    private $apikey;
+
+    /**
+     * @var string
+     */
+    private $apipassword;
+
     public function __construct(array $config, array $payload)
     {
         $this->config = new Config($config);
@@ -52,6 +67,21 @@ final class Handler
             } else {
                 exit("credentials invalid\n");
             }
+        }
+
+        if ($this->config->isAllowNetcupCreds()) {
+            if ($this->payload->isValidNetcupCreds()) {
+                if ($this->config->isDebug()) {
+                    $this->doLog('received valid Netcup credentials');
+                }
+            }
+            $this->customerid = $this->payload->getCustomerId();
+            $this->apikey = $this->payload->getApiKey();
+            $this->apipassword = $this->payload->getApiPassword();
+        } else {
+            $this->customerid = $this->config->getCustomerId();
+            $this->apikey = $this->config->getApiKey();
+            $this->apipassword = $this->config->getApiPassword();
         }
 
         if (is_readable($this->config->getLogFile())) {
@@ -112,9 +142,9 @@ final class Handler
         $dnsClient = new Soap\DomainWebserviceSoapClient();
 
         $loginHandle = $dnsClient->login(
-            $this->config->getCustomerId(),
-            $this->config->getApiKey(),
-            $this->config->getApiPassword(),
+            $this->customerid,
+            $this->apikey,
+            $this->apipassword,
             $clientRequestId
         );
 
@@ -139,8 +169,8 @@ final class Handler
 
         $infoHandle = $dnsClient->infoDnsRecords(
             $updateDomainName,
-            $this->config->getCustomerId(),
-            $this->config->getApiKey(),
+            $this->customerid,
+            $this->apikey,
             $loginHandle->responsedata->apisessionid,
             $clientRequestId
         );
@@ -231,8 +261,8 @@ final class Handler
 
             $dnsClient->updateDnsRecords(
                 $updateDomainName,
-                $this->config->getCustomerId(),
-                $this->config->getApiKey(),
+                $this->customerid,
+                $this->apikey,
                 $loginHandle->responsedata->apisessionid,
                 $clientRequestId,
                 $newRecordSet
@@ -248,8 +278,8 @@ final class Handler
 
             $dnsClient->updateDnsRecords(
                 $updateDomainName,
-                $this->config->getCustomerId(),
-                $this->config->getApiKey(),
+                $this->customerid,
+                $this->apikey,
                 $loginHandle->responsedata->apisessionid,
                 $clientRequestId,
                 $recordSet
@@ -261,8 +291,8 @@ final class Handler
         }
 
         $logoutHandle = $dnsClient->logout(
-            $this->config->getCustomerId(),
-            $this->config->getApiKey(),
+            $this->customerid,
+            $this->apikey,
             $loginHandle->responsedata->apisessionid,
             $clientRequestId
         );

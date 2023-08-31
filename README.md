@@ -32,6 +32,7 @@ Parameter | Example | Explanation
 `returnIp` | `true` / false | enables return of result if a record was changed
 `allowCreate` | true/`false` | allows creation of entries if parameter `create=true` in URL
 `restrictDomain` | true / `false` | allows admin to restrict the domain to update to a given value `domain` and/or `host`. See URL parameters for host parameter explanation
+`allowNetcupCreds` | true / `false` | allows the user to pass netcup credentials directly via the URL. URL creds will be preferred if any still exist in .env file
 
 * alternatively you can use .configure.sh to create your .env file for you (if you are on a *NIX system)
 
@@ -60,6 +61,9 @@ txt | acme-challenge-text | the content to update an existing TXT record
 force | true | ignore checking if the record needs to be updated, just do it anyways. Default: `false`
 mode | * | `case B)` If domain is your registered domain "example.com". Possible values: `*` or `both`. Default: `@`
 create | true | create all entries if none exist. e.g. will not create A if AAAA exists. Needs `allowCreate=true` in .env
+customerId | 12345 | uses the URL provided credentials instead of the ones stored in .env. Needs `allowNetcupCreds=true` in .env
+apiKey | 12345 | uses the URL provided credentials instead of the ones stored in .env. Needs `allowNetcupCreds=true` in .env
+apiPassword | 12345 | uses the URL provided credentials instead of the ones stored in .env. Needs `allowNetcupCreds=true` in .env
 
 
 
