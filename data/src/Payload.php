@@ -35,6 +35,36 @@ final class Payload
     private $ipv6;
 
     /**
+     * @var string
+    */
+    private $txt;
+
+    /**
+     * @var string
+     */
+    private $host;
+
+    /**
+     * @var int
+     */
+    private $customerId;
+
+    /**
+     * @var string
+     */
+    private $apiKey;
+
+    /**
+     * @var string
+     */
+    private $apiPassword;
+
+    /**
+     * @var bool
+     */
+    private $create = false;
+
+    /**
      * @var bool
      */
     private $force = false;
@@ -55,7 +85,10 @@ final class Payload
     {
         return
             !empty($this->user) &&
-            !empty($this->password) &&
+            (
+                $this->user == 'anonymous' ||
+                !empty($this->password)
+            ) &&
             !empty($this->domain) &&
             (
                 (
@@ -65,7 +98,44 @@ final class Payload
                 (
                     !empty($this->ipv6) && $this->isValidIpv6()
                 )
+                ||
+                !empty($this->txt)
             );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidNetcupCreds()
+    {
+        return
+            !empty($this->customerId) &&
+            !empty($this->apiKey) &&
+            !empty($this->apiPassword);
+    }
+
+    /**
+     * @return int
+     */
+    public function getCustomerId()
+    {
+        return $this->customerId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getapiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiPassword()
+    {
+        return $this->apiPassword;
     }
 
     /**
@@ -89,7 +159,30 @@ final class Payload
      */
     public function getDomain()
     {
-        return $this->domain;
+        if (empty($this->host))
+        {
+            return $this->domain;
+        }
+        else
+        {
+            return $this->host . "." . $this->domain;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        if (!empty($this->host))
+        {
+            return $this->host;
+        }
+        else
+        {
+            $domainParts = explode('.', $this->domain);
+            return $domainParts[0];
+        }
     }
 
     /**
@@ -110,6 +203,35 @@ final class Payload
     }
 
     /**
+     * @return bool
+     */
+    public function getCreate()
+    {
+        return $this->create;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTypes()
+    {
+        $types = array();
+        if ($this->getIpv4() && $this->isValidIpv4())
+        {
+            array_push($types, "A");
+        }
+        if ($this->getIpv6() && $this->isValidIpv6())
+        {
+            array_push($types, "AAAA");
+        }
+        if ($this->getTxt())
+        {
+            array_push($types, "TXT");
+        }
+        return $types;
+    }
+
+    /**
      * there is no good way to get the correct "registrable" Domain without external libs!
      *
      * @see https://github.com/jeremykendall/php-domain-parser
@@ -120,11 +242,13 @@ final class Payload
      * works: nas.tld.de
      * works: tld.com
      * failed: nas.tld.co.uk
-     * failed: nas.home.tld.de
+     * failed: nas.home.tld.de  ** see new below
+     * 
+     *  new: for explicit host / domain separation use "&host=nas.home&domain=tld.de" for the last example
      *
      * @return string
      */
-    public function getHostname()
+    public function getDomainName()
     {
         // hack if top level domain are used for dynDNS
         if (1 === substr_count($this->domain, '.')) {
@@ -169,10 +293,19 @@ final class Payload
     }
 
     /**
+     * @return string
+     */
+    public function getTxt()
+    {
+        return $this->txt;
+    }
+
+    /**
      * @return bool
      */
     public function isForce()
     {
         return $this->force;
     }
+
 }
