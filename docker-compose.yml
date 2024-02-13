@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: nginx/Dockerfile
-    image: nginx:alpine
     ports:
       - "8180:80"
     volumes:
