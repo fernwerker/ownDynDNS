@@ -1,5 +1,5 @@
 # ownDynDNS
-Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM FRITZ!Box  
+Self-hosted dynamic DNS php-based Docker container to update netcup DNS API from consumer routers etc.  
 
 ## Authors
 * Felix Kretschmer [@fernwerker](https://github.com/fernwerker)
@@ -8,38 +8,11 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
 * Nils Blume [@niiwiicamo](https://github.com/niiwiicamo)
 
 ## Usage
-### Install using configure scripts
-* Copy `update.php`, `src/*`, `.env.dist`, `.configure.sh` and `.configure-endpoints.sh` to your webspace
-* If you want multiple endpoints use .configure-endpoints.sh
-* If you want a single endpoint use .configure.sh
 
-### Manual Installation
-* Copy all files to your webspace
-* If you want multiple endpoints that each can only update one domain look at the mydomain folder.<br>
-The update URL would be https://`url`/mydomain/update.php?(...)
-* create a copy of `.env.dist` as `.env` and configure:
+### docker-compose.yaml
+```
 
-Parameter | Example | Explanation
----: | :--- | :---
-`username` | dnsupdater |  The username for your Router to authenticate (so not everyone can update your DNS)
-`password` | secretpleasechange | password for your Router
-`apiKey` | 18neqwd91e21onei1p23841 | API key which is generated in netcup CCP
-`apiPassword` | 82jewqde9m30 | API password which is generated in netcup CCP
-`customerId` | 12345 | your netcup Customer ID
-`log` | `true` / false | enables logging
-`logFile` | log.json | configures logfile location if enabled
-`debug` | true / `false` | enables debug mode and generates more output from update.php (normal operation has no output). Needed to receive stack traces from errors.
-`returnIp` | `true` / false | enables return of result if a record was changed
-`allowCreate` | true/`false` | allows creation of entries if parameter `create=true` in URL
-`restrictDomain` | true / `false` | allows admin to restrict the domain to update to a given value `domain` and/or `host`. See URL parameters for host parameter explanation
-`allowNetcupCreds` | true / `false` | allows the user to pass netcup credentials directly via the URL. URL creds will be preferred if any still exist in .env file
-`allowAnonymous` | true / `false` | allows anonymous login, recommended only if you do not store any credentials and disable logging
-
-* alternatively you can use .configure.sh to create your .env file for you (if you are on a *NIX system)
-
-* Create each host record in your netcup CCP (DNS settings) before using the script. <s>The script does not create any missing records.</s><br>
-You can now set `allowCreate=true` in .env and pass `create=true` as URL parameter to create entries on the fly.
-
+```
 
 ## URL possible uses:
 ### Required parameters in URL:

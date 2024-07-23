@@ -1,23 +1,20 @@
-version: "3"
 services:
-
-  nginx:
-    build:
-      context: .
-      dockerfile: nginx/Dockerfile
+  owndyndns:
+    container_name: dyndns
+    image: niiwiicamo/owndyndns
+    environment:
+      DDNS_USER: changeme
+      DDNS_PASS: changeme
+      NETCUP_APIKEY: 12345asdf
+      NETCUP_APIPASS: asdf12345
+      NETCUP_CUSTOMERID: 01234
+      DDNS_DEBUG: 0  # optional, default: 0
+      DDNS_LOG: 0  # optional, default: 1
+      # DDNS_LOGFILE: log.json  # optional, default: log.json
+      DDNS_RETURNIP: 0  # optional, default: 1
+      DDNS_ALLOWCREATE: 1  # optional, default: 0
+      # DDNS_RESTRICTDOMAIN: 0  # optional, default: 0
+      # DDNS_FORCEDDOMAIN: example.net  # optional, default empty
+      # DDNS_FORCEDHOST: hostname  # optional, default empty
     ports:
-      - "8180:80"
-    volumes:
-      - data:/var/www/html
-
-  php:
-    build:
-      context: .
-      dockerfile: php/Dockerfile
-    depends_on:
-      - nginx
-    volumes:
-      - data:/var/www/html
-
-volumes:
-  data:
+      - 8080:8080
