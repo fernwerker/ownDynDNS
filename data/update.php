@@ -57,5 +57,4 @@ if (getenv('DDNS_FORCEDHOST') !== false) {
     $config['host'] = getenv('DDNS_FORCEDHOST');
 }
 
-print_r ($config);
 (new netcup\DNS\API\Handler($config, $_REQUEST))->doRun();
