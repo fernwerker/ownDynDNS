@@ -3,11 +3,11 @@ services:
     container_name: dyndns
     image: niiwiicamo/owndyndns
     environment:
-      DDNS_USER: changeme
-      DDNS_PASS: changeme
-      NETCUP_APIKEY: 12345asdf
-      NETCUP_APIPASS: asdf12345
-      NETCUP_CUSTOMERID: 01234
+      DDNS_USER: ${DDNS_USER}
+      DDNS_PASS: ${DDNS_PASS}
+      NETCUP_APIKEY: ${NETCUP_APIKEY}
+      NETCUP_APIPASS: ${NETCUP_APIPASS}
+      NETCUP_CUSTOMERID: ${NETCUP_CUSTOMERID}
       DDNS_DEBUG: 0  # optional, default: 0
       DDNS_LOG: 0  # optional, default: 1
       # DDNS_LOGFILE: log.json  # optional, default: log.json
@@ -16,5 +16,26 @@ services:
       # DDNS_RESTRICTDOMAIN: 0  # optional, default: 0
       # DDNS_FORCEDDOMAIN: example.net  # optional, default empty
       # DDNS_FORCEDHOST: hostname  # optional, default empty
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
+
+  certbot:
+    container_name: certbot
+    image: certbot/certbot
+    depends_on:
+      owndyndns:
+        condition: service_healthy
+    environment:
+      DDNS_USER: ${DDNS_USER}
+      DDNS_PASS: ${DDNS_PASS}
+      DDNS_HOST: ${DDNS_HOST}
+      DDNS_DOMAIN: ${DDNS_DOMAIN}
+      DDNS_SCRIPT: http://dyndns:8080/update.php
+      DDNS_EMAIL: ${DDNS_EMAIL} # the email used for LetsEncrypt registration
+    volumes:
+      - ./auth-hook.sh:/auth-hook.sh
+      - letsencrypt:/etc/letsencrypt
+    command: "certonly --manual --preferred-challenges=dns --agree-tos --email ${DDNS_EMAIL} --non-interactive --manual-auth-hook /auth-hook.sh -d ${DDNS_HOST}.${DDNS_DOMAIN}"
+
+volumes:
+  letsencrypt:
