@@ -1,5 +1,5 @@
 # ownDynDNS
-Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM FRITZ!Box  
+Self-hosted dynamic DNS php-based Docker container to update netcup DNS API from consumer routers etc.  
 
 ## Authors
 * Felix Kretschmer [@fernwerker](https://github.com/fernwerker)
@@ -8,64 +8,51 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
 * Nils Blume [@niiwiicamo](https://github.com/niiwiicamo)
 
 ## Usage
-### Install using configure scripts
-* Copy `update.php`, `src/*`, `.env.dist`, `.configure.sh` and `.configure-endpoints.sh` to your webspace
-* If you want multiple endpoints use .configure-endpoints.sh
-* If you want a single endpoint use .configure.sh
 
-### Manual Installation
-* Copy all files to your webspace
-* If you want multiple endpoints that each can only update one domain look at the mydomain folder.<br>
-The update URL would be https://`url`/mydomain/update.php?(...)
-* create a copy of `.env.dist` as `.env` and configure:
+This docker image only provides a basic http server as default. You should never expose this to the internet!
+Use a reverse proxy or run everything locally.
 
-Parameter | Example | Explanation
+### docker-compose.yaml
+Take a look at docker-compose.yaml for inspiration.
+
+#### The following environment variables are `required`:
+env | description
+---: | :--- 
+DDNS_USER <br> DDNS_PASS | The username and password that the DynDNS client (e.g. your router) uses to authenticate to this container
+NETCUP_APIKEY <br> NETCUP_APIPASS <br> NETCUP_CUSTOMERID | Your netcup credentials so this container can authorize against netcup
+
+
+#### The following environment variables are `optional`:
+env | default | description
 ---: | :--- | :---
-`username` | dnsupdater |  The username for your Router to authenticate (so not everyone can update your DNS)
-`password` | secretpleasechange | password for your Router
-`apiKey` | 18neqwd91e21onei1p23841 | API key which is generated in netcup CCP
-`apiPassword` | 82jewqde9m30 | API password which is generated in netcup CCP
-`customerId` | 12345 | your netcup Customer ID
-`log` | `true` / false | enables logging
-`logFile` | log.json | configures logfile location if enabled
-`debug` | true / `false` | enables debug mode and generates more output from update.php (normal operation has no output). Needed to receive stack traces from errors.
-`returnIp` | `true` / false | enables return of result if a record was changed
-`allowCreate` | true/`false` | allows creation of entries if parameter `create=true` in URL
-`restrictDomain` | true / `false` | allows admin to restrict the domain to update to a given value `domain` and/or `host`. See URL parameters for host parameter explanation
-`allowNetcupCreds` | true / `false` | allows the user to pass netcup credentials directly via the URL. URL creds will be preferred if any still exist in .env file
-`allowAnonymous` | true / `false` | allows anonymous login, recommended only if you do not store any credentials and disable logging
-
-* alternatively you can use .configure.sh to create your .env file for you (if you are on a *NIX system)
-
-* Create each host record in your netcup CCP (DNS settings) before using the script. <s>The script does not create any missing records.</s><br>
-You can now set `allowCreate=true` in .env and pass `create=true` as URL parameter to create entries on the fly.
+DDNS_DEBUG | 0 | Includes debug information in the web response
+DDNS_LOG | 1 | Creates a json log file
+DDNS_LOGFILE | log.json | Log file location, relative to webroot
+DDNS_RETURNIP | 1 | Returns the updated DNS record (IPv4, IPv6, TXT)
+DDNS_ALLOWCREATE | 0 | Allows for a new DNS entry to be created and set instead of only updating existing
+DDNS_RESTRICTDOMAIN | 0 | Allows you to override the DNS entry to be updated
+DDNS_FORCEDDOMAIN | "" | When DDNS_RESTRICTDOMAIN is set, enter the registered domain name (e.g. example.com)
+DDNS_FORCEDHOST | "" | When DDNS_RESTRICTDOMAIN is set, enter the DNS entry host name (e.g. _acme-challenge.test.home)
 
 
-## URL possible uses:
-### Required parameters in URL:
+### URL contents:
 
-<b>user, password and domain</b> are <i> always needed</i>, as well as at least one of the following: <br>
-<b>ipv4, ipv6, txt</b>
+#### The following parameters are supported
 
+`You must include: user, password, domain and one of ipv4, ipv6 and txt`
 
-Parameter | Example | Explanation
+parameter | example | description
 ---: | :--- | :---
-user | dnsupdater | username to authenticate against this script as defined in .env file. If anonymous login is allowed in .env: `anonymous`
-password | secretpleasechange | password for that user as defined in .env file
-domain | home.example.com | `case A)` If `host` is not specified: the FQDN for your host
-domain | example.com | `case B)` If you want to update the @ or * record
-domain | example.com | `case C)` If `host`is specified: only the domain part as registered at netcup "nas.home.example.com"
-host | nas.home | `case C)` If your domain contains more than 3 levels "nas.home.example.com"
-ipv4 | 1.2.3.4 | the ipv4 address to update an existing A record
-ipv6 | fe80::12:34:56 | the ipv6 address to update an existing AAAA record
-txt | acme-challenge-text | the content to update an existing TXT record
-force | true | ignore checking if the record needs to be updated, just do it anyways. Default: `false`
-mode | * | `case B)` If domain is your registered domain "example.com". Possible values: `*` or `both`. Default: `@`
-create | true | create all entries if none exist. e.g. will not create A if AAAA exists. Needs `allowCreate=true` in .env
-customerId | 12345 | uses the URL provided credentials instead of the ones stored in .env. Needs `allowNetcupCreds=true` in .env
-apiKey | 12345 | uses the URL provided credentials instead of the ones stored in .env. Needs `allowNetcupCreds=true` in .env
-apiPassword | 12345 | uses the URL provided credentials instead of the ones stored in .env. Needs `allowNetcupCreds=true` in .env
-
+user | dnsupdater | The DDNS_USER 
+password | secretpleasechange | The DDNS_PASS
+domain | `a)` home.example.com <br> `b)` example.com <br> `c)` example.com | `a)` The FQDN to update <br> `b)` The registered domain only, for multi part host names <br> `c)` The domain if you want to update the @ or * record
+host | nas.home | optional; `case b)` If your domain contains more than 3 levels, e.g. "nas.home.example.com"
+ipv4 | 1.2.3.4 | the ipv4 address to update a A record
+ipv6 | fe80::12:34:56 | the ipv6 address to update a AAAA record
+txt | acme-challenge-text | the content to update a TXT record
+force | true | optional; ignore checking if the record needs to be updated, just do it anyways. Default: `false`
+mode | * | optional; `case c)` If domain is your registered domain "example.com". Possible values: `*` or `both`. Default: `@`
+create | true | optional; create all entries if none exist. e.g. will not create A if AAAA exists. Needs `DDNS_ALLOWCREATE=1`
 
 
 #### Example URL to update A record (IPv4) of home.example.com:
@@ -100,8 +87,8 @@ https://`dyndns.example.com`/update.php?user=`username`&password=`password`&doma
   * Domainname: `<host record that is supposed to be updated>`
 * Multiple Domains:
   * Domainname: `<first host record that is supposed to be updated>,<second host record that is supposed to be updated>,....`
-* Username: `<username as defined in .env file>`
-* Password: `<password as definied in .env file>`
+* Username: `<DDNS_USER>`
+* Password: `<DDNS_PASS>`
 
 ### Synology DSM Settings
 * Go to "Control Panel" -> "External Access" -> "DDNS"
@@ -114,8 +101,8 @@ https://`dyndns.example.com`/update.php?user=`username`&password=`password`&doma
 * Click on "Add" to create a DDNS job
 * Select your custom provider. Notice that an asterisk [*] has appeared in front of the name to signify that this is a custom provider.
 * Hostname: `<host record that is supposed to be updated>`
-* Username/Email: `<username as defined in .env file>`
-* Password/Key: `<password as defined in .env file>`
+* Username/Email: `<DDNS_USER>`
+* Password/Key: `<DDNS_PASS>`
 * External Address (IPv4): probably "Auto", uses Synology service to find own external IP
 * External Address (IPv6): doesn't matter, currently not supported by Synology
 
@@ -125,7 +112,7 @@ https://`dyndns.example.com`/update.php?user=`username`&password=`password`&doma
 * Service Type: "Custom"
 * Interface to monitor: `<select you WAN interface>`
 * Interface to send update from: `<select your WAN interface>`
-* Update URL: `https://<url of your webspace>/update.php?user=<user from .env>&password=<password from .env>&ipv4=%IP%&domain=<host record to update>`
+* Update URL: `https://<url of your webspace>/update.php?user=<DDNS_USER>&password=<DDNS_PASS>&ipv4=%IP%&domain=<host record to update>`
 * Leave all other fields empty / default
 
 # run as cronjob on a **nix based device
@@ -137,4 +124,4 @@ https://`dyndns.example.com`/update.php?user=`username`&password=`password`&doma
 
 ## License
 Published under GNU General Public License v3.0  
-&copy; Felix Kretschmer, 2021
+Original: &copy; Felix Kretschmer, 2021
