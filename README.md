@@ -45,7 +45,7 @@ parameter | example | description
 ---: | :--- | :---
 user | dnsupdater | The DDNS_USER 
 password | secretpleasechange | The DDNS_PASS
-domain | `a)` home.example.com <br> `b)` example.com <br> `c)` | `a)` The FQDN to update <br> `b)` The registered domain only, for multi part host names <br> `c)` The domain if you want to update the @ or * record
+domain | `a)` home.example.com <br> `b)` example.com <br> `c)` example.com | `a)` The FQDN to update <br> `b)` The registered domain only, for multi part host names <br> `c)` The domain if you want to update the @ or * record
 host | nas.home | optional; `case b)` If your domain contains more than 3 levels, e.g. "nas.home.example.com"
 ipv4 | 1.2.3.4 | the ipv4 address to update a A record
 ipv6 | fe80::12:34:56 | the ipv6 address to update a AAAA record
