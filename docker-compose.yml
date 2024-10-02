@@ -8,10 +8,10 @@ services:
       NETCUP_APIKEY: ${NETCUP_APIKEY}
       NETCUP_APIPASS: ${NETCUP_APIPASS}
       NETCUP_CUSTOMERID: ${NETCUP_CUSTOMERID}
-      DDNS_DEBUG: 0  # optional, default: 0
-      DDNS_LOG: 0  # optional, default: 1
+      DDNS_DEBUG: 1  # optional, default: 0
+      DDNS_LOG: 1  # optional, default: 1
       # DDNS_LOGFILE: log.json  # optional, default: log.json
-      DDNS_RETURNIP: 0  # optional, default: 1
+      DDNS_RETURNIP: 1  # optional, default: 1
       DDNS_ALLOWCREATE: 1  # optional, default: 0
       # DDNS_RESTRICTDOMAIN: 0  # optional, default: 0
       # DDNS_FORCEDDOMAIN: example.net  # optional, default empty
