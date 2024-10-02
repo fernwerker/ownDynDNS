@@ -1,7 +1,7 @@
 # ownDynDNS auth script for certbot dns-01 challenge
 
 # install curl
-$(apk --no-cache add curl)
+apk --no-cache add curl
 
 ACME_PREFIX="_acme-challenge"
 
