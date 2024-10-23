@@ -1,0 +1,2 @@
+foreground { echo "making everything in /make-executable executable..." }
+chmod +x /make-executable/* 2>/dev/null
