@@ -1,7 +1,7 @@
 FROM serversideup/php:8.3-fpm-nginx-alpine
 USER root
+COPY --chown=root:root auth-hook.sh /hooks/auth-hook.sh
 VOLUME [ "/hooks" ]
-COPY --chown=root:root ./auth-hook.sh /hooks/auth-hook.sh
 RUN mkdir -p /var/www/html/public/src &&\
     install-php-extensions soap
 USER www-data
