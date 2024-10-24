@@ -1,2 +1,2 @@
-foreground { echo "copying hooks to volume /hooks for use by certbot..." }
-cp /data/hooks/* /hooks/
+foreground { echo "(custom-hook-provider): Copying hooks to volume /hooks for use by certbot..." }
+foreground { cp /data/hooks/auth-hook.sh /hooks/ }

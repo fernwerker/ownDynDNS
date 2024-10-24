@@ -1,14 +1,17 @@
 FROM serversideup/php:8.3-fpm-nginx-alpine
 USER root
-COPY --chown=root:root data/hooks/ /data/hooks
+RUN mkdir -p /data/hooks /hooks
+COPY --chown=www-data:www-data data/hooks/ /data/hooks
 VOLUME [ "/hooks" ]
+RUN chmod 777 /hooks
+COPY --chown=root:root data/etc/ /etc
 RUN mkdir -p /var/www/html/public/src &&\
     install-php-extensions soap
 USER www-data
 WORKDIR /var/www/html/public
-COPY --chown=www-data:www-data ./data/src/ /var/www/html/public/src
-COPY --chown=www-data:www-data ./data/update.php /var/www/html/public
-COPY --chown=www-data:www-data ./data/.env.dist /var/www/html/public/.env
+COPY --chown=www-data:www-data data/var/www/html/public/src/ /var/www/html/public/src
+COPY --chown=www-data:www-data data/var/www/html/public/update.php /var/www/html/public
+COPY --chown=www-data:www-data data/var/www/html/public/.env.dist /var/www/html/public/.env
 RUN sed -i "s|listen \[::\]:8080 default_server;|# \0|" /etc/nginx/site-opts.d/http.conf.template
 HEALTHCHECK --interval= --timeout=5s --start-period=10s CMD curl --insecure --silent --location --show-error --fail http://localhost:8080$HEALTHCHECK_PATH || exit 1
 LABEL org.opencontainers.image.source=https://github.com/niiwiicamo/owndyndns
