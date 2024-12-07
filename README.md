@@ -8,7 +8,7 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
 
 ## Usage
 ### Installation
-* Copy all files to your webspace
+* Copy all files to your [webspace](https://community.netcup.com/en/tutorials/ddns-with-webhosting)
 * create a copy of `.env.dist` as `.env` and configure:
   * `username` -> The username for your Router to authenticate (so not everyone can update your DNS)
   * `password` -> password for your Router
