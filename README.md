@@ -1,5 +1,5 @@
 # ownDynDNS
-Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM FRITZ!Box  
+Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM FRITZ!Box or UniFi Gateways
 
 ## Authors
 * Felix Kretschmer [@fernwerker](https://github.com/fernwerker)
@@ -31,6 +31,14 @@ Self-hosted dynamic DNS php script to update netcup DNS API from Router like AVM
   * Domainname: `<first host record that is supposed to be updated>,<second host record that is supposed to be updated>,....`
 * Username: `<username as defined in .env file>`
 * Password: `<password as definied in .env file>`
+
+### UniFi Gateways
+* Go to "Settings" -> "Internet" -> "Choose WAN Interface" -> "Dynamic DNS" -> "+ Create New Dynamic DNS"
+* Service "Choose -> `dyndns`"
+* Hostname: `<host record that is supposed to be updated>`
+* Username: `<username as defined in .env file>`
+* Password: `<password as definied in .env file>`
+* Server: `dyn.yourdomain.com/update.php/\/nic/update?user=%u&password=%p&ipv4=%i&force=0&mode=both&domain=%h`
 
 # run as cronjob on a **nix based device
 * see [examples](./examples)
