@@ -142,14 +142,14 @@ final class Handler
                 }
 
                 // update AAAA Record if exists and IP has changed
-                if ('AAAA' === $record->type && $this->payload->getIpv6() &&
+                if ('AAAA' === $record->type && $this->payload->getResolvedIpv6() &&
                     (
                         $this->payload->isForce()
-                        || $record->destination !== $this->payload->getIpv6()
+                        || $record->destination !== $this->payload->getResolvedIpv6()
                     )
                 ) {
-                    $record->destination = $this->payload->getIpv6();
-                    $this->doLog(sprintf('IPv6 for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getIpv6()));
+                    $record->destination = $this->payload->getResolvedIpv6();
+                    $this->doLog(sprintf('IPv6 for %s set to %s', $record->hostname . '.' . $this->payload->getHostname(), $this->payload->getResolvedIpv6()));
                     $changes = true;
                 }
             }
